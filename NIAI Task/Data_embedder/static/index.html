@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataEmbedder AI | Vectorizer & Document Chatbot</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Background Glows -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="app-layout">
+        <!-- Top Navigation Bar -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">DataEmbedder <span class="gradient-text">AI</span></h1>
+                    <p class="brand-subtitle">Universal Document Chunking, Vector Embedding & RAG Chatbot</p>
+                </div>
+            </div>
+
+            <!-- Telemetry Badges -->
+            <div class="telemetry-bar">
+                <div class="stat-pill" title="Loaded Documents">
+                    <span class="stat-label">Docs:</span>
+                    <span id="stat-docs" class="stat-value">0</span>
+                </div>
+                <div class="stat-pill highlight-pill" title="Total Pages">
+                    <span class="stat-label">Pages:</span>
+                    <span id="stat-pages-badge" class="stat-value">0</span>
+                </div>
+                <div class="stat-pill highlight-pill-cyan" title="Total Chunks">
+                    <span class="stat-label">Chunks:</span>
+                    <span id="stat-chunks-badge" class="stat-value">0</span>
+                </div>
+                <div class="stat-pill highlight-pill-green" title="Embedded Vectors">
+                    <span class="stat-label">Vectors:</span>
+                    <span id="stat-vectors-badge" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <button id="btn-open-settings" class="btn-icon" title="API Keys & LLM Settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </button>
+                <button id="btn-clear-all" class="btn-secondary" title="Clear all loaded documents, chunks & vectors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    <span>Clear All</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Left Column: Pipeline (Load -> Split Chunks -> Vectorize) -->
+            <div class="pipeline-column">
+                
+                <!-- STEP 1: Ingestion Card -->
+                <section class="card glass-card">
+                    <div class="card-header">
+                        <div class="step-badge">1</div>
+                        <div>
+                            <h2 class="card-title">Load Documents & Folders</h2>
+                            <p class="card-desc">Load whole folders, PDFs, Word documents, text files, or web URLs</p>
+                        </div>
+                    </div>
+
+                    <!-- Ingestion Source Tabs -->
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" data-tab="tab-files">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            PDF / Docs
+                        </button>
+                        <button class="tab-btn" data-tab="tab-folder">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            Whole Folder
+                        </button>
+                        <button class="tab-btn" data-tab="tab-web">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            WebBaseLoader
+                        </button>
+                    </div>
+
+                    <!-- Tab 1: File Upload -->
+                    <div id="tab-files" class="tab-pane active">
+                        <div id="drop-zone" class="drop-zone">
+                            <div class="drop-zone-icon">
+                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                            <p class="drop-primary">Drag & drop files or <span class="browse-link">browse</span></p>
+                            <p class="drop-sub">PDF, TXT, DOCX, CSV, MD, JSON, ZIP</p>
+                            <input type="file" id="file-input" multiple accept=".pdf,.docx,.doc,.txt,.md,.csv,.json,.py,.js,.html,.zip" hidden>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Whole Folder Ingestion -->
+                    <div id="tab-folder" class="tab-pane">
+                        <div class="folder-options">
+                            <label class="folder-pick-box" for="folder-input">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                <span>Select & Upload Folder from Computer</span>
+                                <input type="file" id="folder-input" webkitdirectory directory multiple hidden>
+                            </label>
+
+                            <div class="divider-text">OR ENTER LOCAL DIRECTORY PATH</div>
+
+                            <div class="path-input-group">
+                                <input type="text" id="local-folder-path" placeholder="e.g. C:\Users\hp\Documents\ResearchPapers" class="input-field">
+                                <button id="btn-load-folder-path" class="btn-primary">
+                                    <span>Load Folder</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: WebBaseLoader -->
+                    <div id="tab-web" class="tab-pane">
+                        <div class="path-input-group">
+                            <input type="url" id="web-url-input" placeholder="https://en.wikipedia.org/wiki/Artificial_intelligence" class="input-field">
+                            <button id="btn-load-url" class="btn-primary">
+                                <span>Scrape Web</span>
+                            </button>
+                        </div>
+                        <p class="helper-text">WebBaseLoader cleans HTML headers, footers, scripts, and extracts core content.</p>
+                    </div>
+
+                    <!-- Ingestion Status Notification -->
+                    <div id="ingest-status" class="status-banner hidden">
+                        <div class="spinner hidden" id="ingest-spinner"></div>
+                        <span id="ingest-msg"></span>
+                    </div>
+
+                    <!-- Loaded Documents List Chips -->
+                    <div id="loaded-docs-wrapper" class="loaded-docs-wrapper hidden">
+                        <div class="loaded-docs-title">Loaded Documents:</div>
+                        <div id="loaded-docs-list" class="loaded-docs-chips"></div>
+                    </div>
+                </section>
+
+
+                <!-- STEP 2: Document Chunking & Page Count Card -->
+                <section class="card glass-card">
+                    <div class="card-header">
+                        <div class="step-badge">2</div>
+                        <div>
+                            <h2 class="card-title">Document Chunker & Statistics</h2>
+                            <p class="card-desc">Divide documents into semantic segments with exact page tracking</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats Display Grid: Total Chunks & Total Pages -->
+                    <div class="metrics-grid">
+                        <div class="metric-card metric-pages">
+                            <div class="metric-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">TOTAL PAGES</span>
+                                <span id="stat-total-pages" class="metric-number">0</span>
+                                <span class="metric-sub">Across all documents</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card metric-chunks">
+                            <div class="metric-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">TOTAL CHUNKS</span>
+                                <span id="stat-total-chunks" class="metric-number">0</span>
+                                <span class="metric-sub">Ready for embedding</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card metric-avg">
+                            <div class="metric-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                </svg>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">AVG CHUNK SIZE</span>
+                                <span id="stat-avg-size" class="metric-number">0</span>
+                                <span class="metric-sub">Characters per chunk</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chunking Config Parameters -->
+                    <div class="chunker-controls">
+                        <div class="slider-control">
+                            <div class="slider-header">
+                                <label for="chunk-size-slider">Chunk Size (Characters):</label>
+                                <span id="chunk-size-val" class="slider-val">800</span>
+                            </div>
+                            <input type="range" id="chunk-size-slider" min="200" max="2500" step="50" value="800">
+                        </div>
+
+                        <div class="slider-control">
+                            <div class="slider-header">
+                                <label for="chunk-overlap-slider">Chunk Overlap:</label>
+                                <span id="chunk-overlap-val" class="slider-val">100</span>
+                            </div>
+                            <input type="range" id="chunk-overlap-slider" min="0" max="400" step="25" value="100">
+                        </div>
+                    </div>
+
+                    <!-- Action: Split Chunks Button -->
+                    <button id="btn-split-chunks" class="btn-action">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="6" cy="6" r="3"></circle>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                            <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
+                            <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+                        </svg>
+                        <span>Split Documents into Chunks</span>
+                    </button>
+
+                    <!-- Collapsible Chunk Inspector -->
+                    <div id="chunk-inspector" class="chunk-inspector hidden">
+                        <div class="inspector-header">
+                            <span class="inspector-title">Chunk Inspector & Page Breakdown</span>
+                            <span id="inspector-count" class="badge">0 Chunks</span>
+                        </div>
+                        <div id="inspector-summary-table" class="doc-summary-table"></div>
+                        <div id="chunks-preview-list" class="chunks-preview-list"></div>
+                    </div>
+                </section>
+
+
+                <!-- STEP 3: Vectorization Button Card -->
+                <section class="card glass-card vector-card">
+                    <div class="card-header">
+                        <div class="step-badge">3</div>
+                        <div>
+                            <h2 class="card-title">Vector Conversion Engine</h2>
+                            <p class="card-desc">Convert all chunks into high-dimensional vector embeddings</p>
+                        </div>
+                    </div>
+
+                    <div class="vector-status-box">
+                        <div class="vector-status-row">
+                            <span class="text-muted">Embedding Engine:</span>
+                            <span id="active-embed-provider" class="provider-pill">Local (SentenceTransformers)</span>
+                        </div>
+                        <div class="vector-status-row">
+                            <span class="text-muted">Vector Dimensions:</span>
+                            <span id="active-dimensions" class="font-mono text-cyan">384-d</span>
+                        </div>
+                        <div class="vector-status-row">
+                            <span class="text-muted">Status:</span>
+                            <span id="vector-state-text" class="status-ready">Pending Chunk Splitting</span>
+                        </div>
+                    </div>
+
+                    <!-- Prominent Vectorize Button -->
+                    <button id="btn-convert-vectors" class="btn-gradient-vectorize" disabled>
+                        <div class="btn-content">
+                            <svg class="spin-icon hidden" id="vectorize-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="10"></circle>
+                            </svg>
+                            <svg class="normal-icon" id="vectorize-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                            <span id="btn-vectorize-text">Convert Chunks into Vectors (Embed All Data)</span>
+                        </div>
+                    </button>
+
+                    <!-- Vectorization Result Banner -->
+                    <div id="vectorize-result" class="vector-result-banner hidden">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span id="vectorize-result-msg">All chunks successfully vectorized!</span>
+                    </div>
+                </section>
+            </div>
+
+
+            <!-- Right Column: Mini Chatbot Area -->
+            <div class="chatbot-column">
+                <section class="card glass-card chat-card">
+                    <div class="chat-header">
+                        <div class="chat-agent-info">
+                            <div class="agent-avatar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"></path>
+                                    <rect x="4" y="10" width="16" height="12" rx="2"></rect>
+                                    <circle cx="9" cy="15" r="1"></circle>
+                                    <circle cx="15" cy="15" r="1"></circle>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="chat-title">Neural Document Chatbot</h3>
+                                <div class="chat-status-indicator">
+                                    <span class="status-dot"></span>
+                                    <span id="chat-engine-status">Grounding: Awaiting Vectors</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-header-actions">
+                            <select id="chat-top-k" class="select-dropdown" title="Number of chunks to retrieve">
+                                <option value="3">Top 3 Chunks</option>
+                                <option value="4" selected>Top 4 Chunks</option>
+                                <option value="6">Top 6 Chunks</option>
+                            </select>
+                            <button id="btn-clear-chat" class="btn-icon" title="Clear conversation">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Message Area -->
+                    <div id="chat-messages" class="chat-messages">
+                        <div class="message assistant-msg welcome-msg">
+                            <div class="msg-bubble">
+                                <p>👋 <strong>Welcome!</strong> I am your Document Intelligence Assistant.</p>
+                                <p>Upload your PDF or entire folder, split it into chunks, and click <strong>"Convert Chunks into Vectors"</strong>. Then ask me any question about your documents!</p>
+                                <div class="starter-prompts">
+                                    <button class="prompt-chip" data-query="What is the main summary of the uploaded document?">💡 Summarize uploaded document</button>
+                                    <button class="prompt-chip" data-query="List the key points and conclusions mentioned.">📋 List key points & conclusions</button>
+                                    <button class="prompt-chip" data-query="What are the important dates, metrics, or numbers?">🔢 Important metrics & numbers</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input Area -->
+                    <div class="chat-input-wrapper">
+                        <form id="chat-form" class="chat-form">
+                            <textarea id="chat-input" placeholder="Ask any question about your uploaded documents..." rows="1" class="chat-textarea"></textarea>
+                            <button type="submit" id="btn-send-chat" class="btn-send" title="Send (Enter)">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                            </button>
+                        </form>
+                        <div class="chat-footer-note">
+                            <span>Press <kbd>Enter</kbd> to send, <kbd>Shift + Enter</kbd> for new line</span>
+                            <span id="active-llm-label" class="llm-pill">Local Synthesis Mode</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal: API Keys & LLM Selection -->
+    <div id="settings-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Settings & API Keys</h3>
+                <button id="btn-close-settings" class="btn-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">
+                    By default, DataEmbedder runs <strong>100% locally and free</strong> with SentenceTransformers embeddings and local semantic extraction. You can optionally connect your API keys for enhanced cloud LLM generation!
+                </p>
+
+                <div class="form-group">
+                    <label for="input-llm-choice">Preferred LLM Generator:</label>
+                    <select id="input-llm-choice" class="input-field">
+                        <option value="auto">Auto (Prefer Gemini/OpenAI if key provided, else Local)</option>
+                        <option value="local">Local Extractive Synthesizer (100% Free / Offline)</option>
+                        <option value="gemini">Google Gemini (Gemini 1.5 Flash)</option>
+                        <option value="openai">OpenAI (GPT-4o-mini)</option>
+                        <option value="groq">Groq (Llama-3.3-70b)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="input-gemini-key">Google Gemini API Key:</label>
+                    <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="input-field">
+                    <span class="field-hint">Free tier available on Google AI Studio</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="input-openai-key">OpenAI API Key:</label>
+                    <input type="password" id="input-openai-key" placeholder="sk-..." class="input-field">
+                </div>
+
+                <div class="form-group">
+                    <label for="input-groq-key">Groq API Key (Ultra-fast):</label>
+                    <input type="password" id="input-groq-key" placeholder="gsk_..." class="input-field">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-save-settings" class="btn-primary">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
