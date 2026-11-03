@@ -10,15 +10,15 @@ A collection of applied Artificial Intelligence, Machine Learning, and Retrieval
 
 ---
 
-## 📌 Projects Overview
+## 📌 Repository Architecture
 
 ```
+applied-ai-ml-systems/
 ├── Data_embedder/             # Neural Document Vectorizer & Grounded RAG Chatbot
-├── Training_models/
-│   └── zameen-project/        # Zameen Real Estate Valuation Platform (React + FastAPI + ML)
-├── Trained_models/            # Streamlit Interactive Prototype & Visual EDA Pipeline
-├── Email_spam/                # Automated NLP Data Cleaning, Profiling & PDF Audit Pipeline
-└── ML/                        # Foundational Supervised Regression & KNN Modeling Lab
+├── Real_Estate_Valuation/     # Zameen Real Estate Valuation Platform (React + FastAPI + ML)
+├── Real_Estate_Streamlit/     # Streamlit Interactive Prototype & Visual EDA Pipeline
+├── Email_spam_pipeline/       # Automated NLP Data Cleaning, Profiling & PDF Audit Pipeline
+└── ML_Foundations/            # Foundational Supervised Regression & KNN Modeling Lab
 ```
 
 ---
@@ -45,7 +45,7 @@ A full-stack document intelligence application that ingests whole folders or web
 
 ### How to Run
 ```bash
-cd "NIAI Task/Data_embedder"
+cd Data_embedder
 
 # 1. Install dependencies
 pip install -r requirements.txt
@@ -71,10 +71,10 @@ An end-to-end Machine Learning property valuation platform trained on 20,000+ li
 
 ### Key Capabilities
 - **End-to-End Pipeline**:
-  - `01_explore.py`: Distribution audits, missingness checks, and anomaly detection.
-  - `02_clean.py`: Unit standardization (e.g. 1 Kanal = 20 Marla), feature engineering, log-transformation, and IQR outlier clipping.
-  - `03_eda.py`: Automated export of visual distributions, correlation heatmaps, and price-by-locality boxplots.
-  - `04_train.py`: Cross-validated Scikit-learn pipelines with `StandardScaler`, `OneHotEncoder`, and `GridSearchCV`.
+  - `src/01_explore.py`: Distribution audits, missingness checks, and anomaly detection.
+  - `src/02_clean.py`: Unit standardization (e.g. 1 Kanal = 20 Marla), feature engineering, log-transformation, and IQR outlier clipping.
+  - `src/03_eda.py`: Automated export of visual distributions, correlation heatmaps, and price-by-locality boxplots.
+  - `src/04_train.py`: Cross-validated Scikit-learn pipelines with `StandardScaler`, `OneHotEncoder`, and `GridSearchCV`.
 - **Benchmarked Models**:
   - Linear Regression (Baseline)
   - Polynomial Regression (Degree 2)
@@ -93,13 +93,13 @@ An end-to-end Machine Learning property valuation platform trained on 20,000+ li
 #### Option A: Full-Stack React + FastAPI Application
 ```bash
 # Terminal 1: FastAPI Backend
-cd "NIAI Task/Training_models/zameen-project"
+cd Real_Estate_Valuation
 pip install -r requirements.txt
 python -m uvicorn backend.main:app --reload --port 8000
 # API documentation available at: http://127.0.0.1:8000/docs
 
 # Terminal 2: React Frontend
-cd "NIAI Task/Training_models/zameen-project/frontend"
+cd Real_Estate_Valuation/frontend
 npm install
 npm run dev
 # Dashboard live at: http://localhost:5173
@@ -107,7 +107,7 @@ npm run dev
 
 #### Option B: Streamlit Prototype
 ```bash
-cd "NIAI Task/Trained_models"
+cd Real_Estate_Streamlit
 pip install -r requirements.txt
 streamlit run app.py
 ```
@@ -134,7 +134,7 @@ A modular, production-ready data cleaning and profiling engine designed for text
 
 ### How to Run
 ```bash
-cd "NIAI Task/Email_spam/data_cleaning"
+cd Email_spam_pipeline/data_cleaning
 python main.py
 # Cleaned dataset saved to: cleaned_data/spam_cleaned.csv
 # Audit reports generated in: reports/cleaning_report.pdf & .json
@@ -152,7 +152,7 @@ Experimental testbed implementing and evaluating core supervised regression and 
 
 ### How to Run
 ```bash
-cd "NIAI Task/ML"
+cd ML_Foundations
 python linear.py
 python polynomial.py
 python KNN.py

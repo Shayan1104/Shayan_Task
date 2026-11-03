@@ -18,6 +18,7 @@ venv.bak/
 
 # Node & Frontend Build
 node_modules/
+dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -51,8 +52,6 @@ htmlcov/
 Thumbs.db
 desktop.ini
 
-# Redundant duplicate dataset copies
-NIAI Task/Training_models/zameenData.csv
-
-# NAVTTC Curriculum (split into standalone repository)
+# Legacy folders (split or migrated)
 NAVTTC-Task/
+NIAI Task/
