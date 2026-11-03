@@ -53,3 +53,6 @@ desktop.ini
 
 # Redundant duplicate dataset copies
 NIAI Task/Training_models/zameenData.csv
+
+# NAVTTC Curriculum (split into standalone repository)
+NAVTTC-Task/
