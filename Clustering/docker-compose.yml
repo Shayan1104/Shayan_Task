@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  clustering-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: clustering-app:latest
+    container_name: streamlit-clustering-app
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    restart: unless-stopped
+
